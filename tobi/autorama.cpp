@@ -44,7 +44,7 @@ int main() {
                 cars[c].sensor = 1;
             chrono[c] = ++t;
         } else {
-            if (cars[c].sensor == p - 1) cars[c].sensor = p, chrono[c] = ++t;
+            if (cars[c].sensor % k == p - 1) cars[c].sensor += 1, chrono[c] = ++t;
         }
     }
 
