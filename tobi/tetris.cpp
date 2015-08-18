@@ -15,6 +15,7 @@ bool operator < (const Player &a, const Player &b) {
 }
 
 int main() {
+    ios::sync_with_stdio(false);
     int p, ma, mi, j, t = 0;
 
     Player players[1005];
@@ -37,9 +38,9 @@ int main() {
 
         sort(players, players + p);
 
-        cout << "Teste " << ++t << "\n\n";
+        cout << "Teste " << ++t << "\n";
         int lp = players[0].points, li = 1;
-        cout << "1 " << lp << " " << players[0].name << "\n\n";
+        cout << "1 " << lp << " " << players[0].name << "\n";
         for (int i = 1; i < p; i++) {
             if (players[i].points == lp) cout << li << " ";
             else {
@@ -47,10 +48,10 @@ int main() {
                 cout << i + 1 << " ";
                 lp = players[i].points;
             }
-            cout << lp << " " << players[i].name << "\n\n";
+            cout << lp << " " << players[i].name << "\n";
         }
 
-        cout << '\n';
+        cout << "\n";
         cin >> p;
     }
 }
