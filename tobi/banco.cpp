@@ -1,22 +1,26 @@
 #include <cstdio>
-#include <queue>
-#include <set>
 
 using namespace std;
 
-int main() {
-    int C, N, t, d, w = 0;
-    priority_queue<int> caixas;
+int caixas[15];
+int C, N, t, d, w = 0;
 
+int m() {
+    int c = caixas[0], index = 0;
+    for (int i = 1; i < C; i++)
+        if (caixas[i] < c) index = i, c = caixas[i];
+    return index;
+}
+
+int main() {
     scanf("%d %d", &C, &N);
-    while (C--) caixas.push(0);
 
     for (int i = 0; i < N; i++) {
         scanf("%d %d", &t, &d);
-        int time = caixas.top();
-        if (time - t > 20) w++;
-        caixas.pop();
-        caixas.push(time + d);
+        int c = m();
+        printf("%d %d\n", c, caixas[c]);
+        if (caixas[c] - t > 20) w++;
+        caixas[c] += d; 
     }
     printf("%d\n", w);
 }
