@@ -18,7 +18,7 @@ int main() {
     for (int i = 0; i < N; i++) {
         scanf("%d %d", &t, &d);
         int c = m();
-        printf("%d %d\n", c, caixas[c]);
+        if (t > caixas[c]) caixas[c] = t;
         if (caixas[c] - t > 20) w++;
         caixas[c] += d; 
     }
