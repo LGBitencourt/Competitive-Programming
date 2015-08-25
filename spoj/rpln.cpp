@@ -29,7 +29,8 @@ int query(int node, int start, int end, int l, int r) {
         return tree[node];
     } else {
         int mid = start + (end - start)/2;
-        return min(query(node*2, start, mid, l, r), query(node*2 + 1, mid + 1, end, l, r));
+        return min(query(node*2, start, mid, l, r), 
+            query(node*2 + 1, mid + 1, end, l, r));
     }
 }
 
