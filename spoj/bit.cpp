@@ -8,6 +8,6 @@ int main() {
         n10 = v/10, v = v % 10;
         n5 = v/5, v = v % 5;
         n1 = v;
-        printf("Teste %d\n%d %d %d %d\n", t++, n50, n10, n5, n1);
+        printf("Teste %d\n%d %d %d %d\n\n", t++, n50, n10, n5, n1);
     }
 }
