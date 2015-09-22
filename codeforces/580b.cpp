@@ -22,13 +22,9 @@ int main () {
     sort(p, p + n);
     int i = 0;
     for (int j = 0; j < n; j++) {
-        while (p[j].ff - p[i].ff > d) {
-            cout << p[j].ff - p[i].ff << '\n';
-            sum -= p[i].ss;
-            i++;
-        }
         sum += p[j].ss;
+        while (p[j].ff - p[i].ff > d) sum -= p[i].ss, i++;
         if (sum > max) max = sum;
     }
-    cout << sum << '\n';
+    cout << max << '\n';
 }
