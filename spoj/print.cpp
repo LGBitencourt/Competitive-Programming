@@ -19,20 +19,17 @@ void crivo() {
 }
 
 int main() {
-    int t, f = 1;
+    int t;
     crivo();
     scanf(" %d", &t);
     while (t--) {
         int x, y;
-        if (!f)
-            putchar('\n');
-        f = 0;
         scanf(" %d %d", &x, &y);
         for (int i = 0; i <= y - x; i++) v[i] = true;
         for (int i = 0; i < j && primes[i] * primes[i] <= y; i++) {
-            int k;
-            for (k = 0; k <= y - x; k++)
-                if ((x + k) % primes[i] == 0 && (x + k)/primes[i] != 1) break;
+            int k = (((x + primes[i] - 1)/primes[i])*primes[i]);
+            if (k == primes[i]) k += primes[i];
+            k -= x;
             for (int w = k; w <= y - x; w += primes[i])
                 v[w] = false;
         }
@@ -40,3 +37,4 @@ int main() {
             if (v[i] && x + i != 1) printf("%d\n", x + i);
     }
 }
+
