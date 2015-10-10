@@ -6,7 +6,7 @@
 int pai[MAXI], q[MAXI], sum[MAXI];
 
 int find (int v) {
-    if (pai[v] == MAX + v) return MAX + v;
+    if (pai[v] == -1) return v;
     return pai[v] = find (pai[v]);
 }
 
@@ -18,7 +18,9 @@ void join (int a, int b) {
     }
 }
 
-void op (int np, int v) {
+void op (int v, int np) {
+    int pv = find (v);
+    q[pv] -= 1, sum[pv] -= v;
     int pnp = find (np);
     q[pnp] += 1, sum[pnp] += v;
     pai[v] = pnp;
@@ -26,18 +28,21 @@ void op (int np, int v) {
 
 int main () {
     int n, m;
-    scanf (" %d %d", &n, &m);
-    while (m--) {
-        int o, x, y;
-        scanf (" %d %d", &o, &x);
-        if (o == 3) {
-            printf ("%d %d\n", q[find(x)], sum[find(x)]);
-        } else {
-            scanf (" %d", &y);
-            if (o == 1)
-                join (x, y);
-            else
-                op (x, y);
+    while (scanf (" %d %d", &n, &m) != EOF) {
+        for (int i = 1; i <= n; i++)
+            pai[MAX + i] = -1, pai[i] = MAX + i, q[MAX + i] = 1, sum[MAX + i] = i;
+        while (m--) {
+            int o, x, y;
+            scanf (" %d %d", &o, &x);
+            if (o == 3) {
+                printf ("%d %d\n", q[find(x)], sum[find(x)]);
+            } else {
+                scanf (" %d", &y);
+                if (o == 1)
+                    join (x, y);
+                else
+                    op (x, y);
+            }
         }
     }
 }
