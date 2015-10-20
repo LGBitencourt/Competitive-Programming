@@ -16,11 +16,11 @@ int find (int v) {
 }
 
 bool join (int a, int b) {
-    a = find(a), b = find(b);
-    if (a == b) return false;
-    if (sz[a] > sz[b]) swap(a, b);
-    pai[a] = b, sz[b] += sz[a];
-    return true;
+    if (find(a) != find(b)) {
+        pai[find(a)] = find(b);
+        return true;
+    }
+    return false;
 }
 
 int main () {
@@ -48,11 +48,9 @@ int main () {
         }
         int i, f = 0;
         for (i = 0; i < W && !f; i++) {
-            if (!join (w[i].u, w[i].v)) f = 1;
+            if (!join (w[i].u, w[i].v)) printf ("%d %d\n",w[i].u, w[i].v), f = 1;
             else degree[w[i].u]++, degree[w[i].v]++;
         }
         degree[w[i].u]++, degree[w[i].v]++;
-        for (int i = 0; i < n; i++)
-            printf ("%d %d\n", i, degree[i]);
     }
 }
