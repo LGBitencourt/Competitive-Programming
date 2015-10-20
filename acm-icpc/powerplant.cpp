@@ -19,10 +19,10 @@ int find (int v) {
 }
 
 bool join (int a, int b) {
-    if (!binary_search(pp, pp + k, find(a)) && find(a) != find(b)) {
+    if (!pp[find(a)] && find(a) != find(b)) {
         pai[find(a)] = find(b);
         return true;
-    } else if (!binary_search(pp, pp + k, find(b)) && find(a) != find(b)) {
+    } else if (!pp[find(b)] && find(a) != find(b)) {
         pai[find(b)] = find(a);
         return true;
     }
@@ -36,10 +36,13 @@ int main () {
         sum = 0;
         scanf (" %d %d %d", &n, &m, &k);
         for (int i = 0; i <= n; i++)
-            pai[i] = -1;
+            pai[i] = -1, pp[i] = 0;
 
-        for (int i = 0; i < k; i++)
-            scanf (" %d", &pp[i]);
+        for (int i = 0; i < k; i++) {
+            int x;
+            scanf (" %d", &x);
+            pp[x] = 1;
+        }
 
         for (int i = 0; i < m; i++)
             scanf (" %d %d %d", &p[i].u, &p[i].v, &p[i].c);

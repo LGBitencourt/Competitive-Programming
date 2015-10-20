@@ -1,37 +1,58 @@
 #include <cstdio>
+#include <cstring>
+#include <algorithm>
 #include <map>
-#include <vector>
 
 using namespace std;
 
-int k, w;
-int pai[100005];
-map<int, int> em;
-vector<int> adj[100005];
+int K, W;
+int pai[100005], sz[100005], degree[100005];
+
+struct Wi { int u, v; } w[100005];
 
 int find (int v) {
     if (pai[v] == -1) return v;
-    return pai[v] = find (pai[v]);
+    return pai[v] = find(pai[v]);
 }
 
 bool join (int a, int b) {
-    if (find (a) != find (b)) {
-        pai[find (a)] = find (b);
-        return true;
-    }
+    a = find(a), b = find(b);
+    if (a == b) return false;
+    if (sz[a] > sz[b]) swap(a, b);
+    pai[a] = b, sz[b] += sz[a];
     return true;
 }
 
 int main () {
-    while (scanf (" %d %d", &k, &w), k != 0) {
-        for (int i = 0; i < 100005; i++)
-            pai[i] = -1;
-
-        for (int i = 0; i < k; i++) {
+    while (scanf (" %d %d", &K, &W), K != 0) {
+        map<int, int> m;
+        int n = 0;
+        for (int i = 0; i <= W; i++)
+            pai[i] = -1, sz[i] = 1;
+        for (int i = 0; i < W; i++) {
             int u, v;
             scanf (" %d %d", &u, &v);
-            adj[u].push_back(v);
-            adj[v].push_back(u);
+
+            map<int, int>::iterator it;
+            it = m.find(u);
+            if (it == m.end())
+                m.insert(make_pair(u, n)), u = n++;
+            else u = it->second;
+
+            it = m.find(v);
+            if (it == m.end())
+                m.insert(make_pair(v, n)), v = n++;
+            else v = it->second;
+
+            w[i].u = u, w[i].v = v;
         }
+        int i, f = 0;
+        for (i = 0; i < W && !f; i++) {
+            if (!join (w[i].u, w[i].v)) f = 1;
+            else degree[w[i].u]++, degree[w[i].v]++;
+        }
+        degree[w[i].u]++, degree[w[i].v]++;
+        for (int i = 0; i < n; i++)
+            printf ("%d %d\n", i, degree[i]);
     }
 }
