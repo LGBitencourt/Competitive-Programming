@@ -1,49 +1,32 @@
 #include <cstdio>
 #include <algorithm>
-#include <queue>
 
 using namespace std;
 
-int maze[105][105];
-
-struct P {
-    int i, j, t;
+struct d {
+    int u, d, l, r;
 };
 
-int N, m;
-queue<P> q;
-
-int vi[] = {1,0,0,-1};
-int vj[] = {0,1,-1,0};
-
-bool valid(int i,int j){
-    return (i>0 && j>0 && i<=n && j<=m);
-}
-
-bool bfs () {
-    while (!q.empty()) {
-        P x = q.front();
-        q.pop();
-        if ((x.i == 0 || x.i == N-1 || x.j == 0 || x.j == m-1) && x.t == 1)
-            return true;
-    }
-    return false;
-}
-
 int main () {
-    scanf (" %d %d", &N, &m);
-    for (int i = 0; i < 3; i++) {
-        P n;
-        scanf (" %d %d", &n.i, &n.j);
-        n.i--, n.j--;
-        if (i == 0) n.t = 1;
-        else n.t = 2;
-        q.push(n);
-    }
-    printf ("%d\n", bfs());
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < m; j++)
-            printf ("%d ", maze[i][j]);
-        putchar('\n');
+    int n, m, t;
+    scanf ("%d %d %d", &n, &m, &t);
+    while (t--) {
+        int rx, ry, gx, gy, gxx, gyy;
+        scanf ("%d %d %d %d %d %d", &ry, &rx, &gy, &gx, &gyy, &gxx);
+        d r, g1, g2;
+        r.u = ry-1, r.d = n-ry, r.r = m - rx, r.l = rx-1;
+        g1.u = gy-1 + abs(rx-gx), g1.d = n-gy + abs(rx-gx),
+            g1.l = gx-1 + abs(ry-gy), g1.r = m-gx+abs(ry-gy);
+        g2.u = gyy-1 + abs(rx-gxx), g2.d = n-gyy + abs(rx-gxx),
+            g2.l = gxx-1 + abs(ry-gyy), g2.r = m-gxx+abs(ry-gyy);
+        if (r.u < g1.u && r.u < g2.u)
+            printf ("YES\n");
+        else if (r.d < g1.d && r.d < g2.d)
+            printf ("YES\n");
+        else if (r.l < g1.l && r.l < g2.l)
+            printf ("YES\n");
+        else if (r.r < g1.r && r.r < g2.r)
+            printf ("YES\n");
+        else printf ("NO\n");
     }
 }
