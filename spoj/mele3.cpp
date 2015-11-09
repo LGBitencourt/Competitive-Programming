@@ -16,7 +16,7 @@ vector<pii> adj[1005];
 int d[50005];
 
 int mod (int n, int m) {
-    if (!(n % m)) return n;
+    if (!(n % m)) return m;
     return n % m;
 }
 
