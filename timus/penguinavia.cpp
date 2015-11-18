@@ -3,7 +3,8 @@
 using namespace std;
 
 char scheme[105][105];
-int n, d, a, qd = 0, qa = 0;
+long long n, d, a, qd = 0, qa = 0;
+set<int> s;
 vector<int> adj[105];
 bool visited[105];
 int pai[105], sz[105];
@@ -35,7 +36,7 @@ void make_edge (int v) {
 }
 
 int main () {
-    scanf (" %d %d %d", &n, &d, &a);
+    scanf (" %lld %lld %lld", &n, &d, &a);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++)
             scheme[i][j] = '0';
@@ -47,16 +48,17 @@ int main () {
             scanf (" %c", &x);
             if (j > i) continue;
             if (x == '1') {
-                if (join (i, j))
-                    adj[i].push_back(j), adj[j].push_back(i);
-                else scheme[i][j] = scheme[j][i] = 'd', qd++;
+                if (!join (i, j))
+                    scheme[i][j] = scheme[j][i] = 'd', qd++;
             }
         }
     }
-    for (int i = 0; i < n; i++)
-        if (!visited[i] && adj[i].size() > 0)
-            dfs(i), make_edge(i);
-    printf ("%d\n", d*qd + a*qa);
+    int l = find (0);
+    for (int i = 1; i < n; i++)
+        if (pai[i] == -1 && i != l)
+            qa++, scheme[l][i] = scheme[i][l] = 'a';
+
+    printf ("%lld\n", d*qd + a*qa);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++)
             putchar(scheme[i][j]);
