@@ -4,16 +4,16 @@
 
 using namespace std;
 
-char a[105][10005]; 
+char a[105][10005];
 int cant[10005][2];
 int main () {
     ios::sync_with_stdio(false);
     int n,m;
     scanf("%d %d",&n,&m);
-    
+
     fore(i,0,m)
     	scanf("%s",a[i]);
-    
+
     fore(i,0,m) {
     	fore(j,0,n) {
 		  	cant[j][0] += a[i][j] == 'W';
@@ -37,7 +37,7 @@ int main () {
     if(mn == cant[n-1][0])
     	printf("0 1\n");
     else {
-    	bool flag = 1; 
+    	bool flag = 1;
     	fore(i,0,n-1) {
     		if(mn == cant[i][1] + cant[n-1][0] - cant[i][0]) {
     			printf("%d %d\n",i+1,i+2);
@@ -48,6 +48,6 @@ int main () {
     	if(flag && mn == cant[n-1][1])
     		printf("%d %d\n",n,n+1);
     }
-    
+
 }
 
