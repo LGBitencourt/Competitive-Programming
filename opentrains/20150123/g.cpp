@@ -1,59 +1,65 @@
 #include <bits/stdc++.h>
+#define debug(args...) fprintf (stderr, args)
 #define MAX 1005
+#define ff first
+#define ss second
 using namespace std;
-typedef pair<int, int> pii;
+typedef pair<int, char> pii;
 
-int x[5] = {1, -1, 0, 0};
-int y[5] = {0, 0, 1, -1};
-char A[MAX][MAX];
-pii st;
-stack<pii> s;
-int r, c;
+char maze[MAX][MAX];
+int d[MAX][MAX];
 
-bool pode (int a, int b) {
-    if (a >= 0 && a < r && b >= 0 && b < c && A[a][b] != '#') return true;
+struct p {
+    int x, y;
+};
+pii fires[MAX*MAX];
+pii jonas;
+int f = 0;
+queue<p> q;
+int l[4] = {0, 0, 1, -1}, c[4] = {1, -1, 0, 0};
+int R, C;
+
+bool can (p x) {
+    if (x.x >= 0 && x.x < R && x.y >= 0 && x.y < C && maze[x.x][x.y] != '#') return true;
     return false;
 }
 
-int bfs (pii p) {
-    queue<pii> q;
-    q.push (p);
-    while (!q.empty ()) {
-        int x, y;
-        a = q.front ().ff;
-        b = q.front ().ss;
-        q.pop ();
-        if (A[a][b] == 'F') return 0;
+void bfs () {
+    while (!q.empty()) {
+        p x = q.front (), n;
+        q.pop();
+        debug ("%d %d\n", x.x, x.y);
         for (int i = 0; i < 4; i++) {
-            if (pode (a+x[i], b+y[i])) {
-                q.push (pii (a+x[i], b+y[i]));
+            n.x = x.x + l[i], n.y = x.y + c[i];
+            if (can (n) && d[n.x][n.y] == INT_MAX) {
+                d[n.x][n.y] = d[x.x][x.y] + 1;
+                q.push (n);
             }
         }
     }
-    return dis;
 }
 
 int main () {
-    scanf ("%d %d", &r, &c);
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            scanf (" %c", &A[i][j]);
-            if (A[i][j] == 'J') {
-                st.ff = i, st.ss = j;
+    scanf (" %d %d", &R, &C);
+    for (int i = 0; i < R; i++) {
+        for (int j = 0; j < C; j++) {
+            scanf (" %c", &maze[i][j]);
+            if (maze[i][j] == 'F') fires[f++] = pii (i, j);
+            else if (maze[i][j] == 'J') jonas = pii (i, j);
+            d[i][j] = INT_MAX;
+            if ((i == 0 || i == R-1 || j == 0 || j == C-1) && maze[i][j] == '.') {
+                p x;
+                x.x = i, x.y = j;
+                d[i][j] = 1;
+                q.push (x);
             }
-            if ((i == 0 || i == n-1) && A[i][j] == '.') s.push (pii (i, j));
-            else if ((j == 0 || j == n-1) && A[i][k] == '.') s.push (pii (i, j));
         }
     }
-    int mi = INT_MAX, res;
-    while (!s.empty ()) {
-        res = bfs (s.top ());
-        if (!res) {
-            printf ("IMPOSSIBLE\n");
-            return 0;
-        }
-        mi = min (mi, res);
-        s.pop ();
-    }
-    printf ("%d\n", mi);
+    bfs ();
+    int mf = INT_MAX;
+    for (int i = 0; i < f; i++)
+        mf = min (mf, d[fires[i].ff][fires[i].ss]);
+    if (d[jonas.ff][jonas.ss] < mf) printf ("%d\n", d[jonas.ff][jonas.ss]);
+    else printf ("IMPOSSIBLE\n");
 }
+
