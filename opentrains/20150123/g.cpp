@@ -4,35 +4,30 @@
 #define ff first
 #define ss second
 using namespace std;
-typedef pair<int, char> pii;
+typedef pair<int, int> pii;
 
 char maze[MAX][MAX];
 int d[MAX][MAX];
-
-struct p {
-    int x, y;
-};
-pii fires[MAX*MAX];
-pii jonas;
-int f = 0;
-queue<p> q;
+pii ex[4*MAX], jonas;
+queue<pii> q;
 int l[4] = {0, 0, 1, -1}, c[4] = {1, -1, 0, 0};
-int R, C;
+int fex[4*MAX];
+int R, C, f, e;
 
-bool can (p x) {
-    if (x.x >= 0 && x.x < R && x.y >= 0 && x.y < C && maze[x.x][x.y] != '#') return true;
+bool can (pii x) {
+    if (x.ff >= 0 && x.ff < R && x.ss >= 0 && x.ss < C && maze[x.ff][x.ss] != '#')
+        return true;
     return false;
 }
 
 void bfs () {
     while (!q.empty()) {
-        p x = q.front (), n;
+        pii x = q.front (), n;
         q.pop();
-        debug ("%d %d\n", x.x, x.y);
         for (int i = 0; i < 4; i++) {
-            n.x = x.x + l[i], n.y = x.y + c[i];
-            if (can (n) && d[n.x][n.y] == INT_MAX) {
-                d[n.x][n.y] = d[x.x][x.y] + 1;
+            n.ff = x.ff + l[i], n.ss = x.ss + c[i];
+            if (can (n) && d[x.ff][x.ss] + 1 < d[n.ff][n.ss]) {
+                d[n.ff][n.ss] = d[x.ff][x.ss] + 1;
                 q.push (n);
             }
         }
@@ -40,26 +35,29 @@ void bfs () {
 }
 
 int main () {
+    f = e = 0;
     scanf (" %d %d", &R, &C);
     for (int i = 0; i < R; i++) {
         for (int j = 0; j < C; j++) {
             scanf (" %c", &maze[i][j]);
-            if (maze[i][j] == 'F') fires[f++] = pii (i, j);
-            else if (maze[i][j] == 'J') jonas = pii (i, j);
             d[i][j] = INT_MAX;
-            if ((i == 0 || i == R-1 || j == 0 || j == C-1) && maze[i][j] == '.') {
-                p x;
-                x.x = i, x.y = j;
-                d[i][j] = 1;
-                q.push (x);
-            }
+            if (maze[i][j] == 'F') q.push (pii (i, j)), d[i][j] = 0;
+            else if (maze[i][j] == 'J') jonas = pii (i, j);
+            if ((i == 0 || i == R-1 || j == 0 || j == C-1)
+                    && (maze[i][j] == '.' || maze[i][j] == 'J')) ex[e++] = pii (i, j);
         }
     }
     bfs ();
-    int mf = INT_MAX;
-    for (int i = 0; i < f; i++)
-        mf = min (mf, d[fires[i].ff][fires[i].ss]);
-    if (d[jonas.ff][jonas.ss] < mf) printf ("%d\n", d[jonas.ff][jonas.ss]);
+    for (int i = 0; i < e; i++)
+        fex[i] = d[ex[i].ff][ex[i].ss];
+    d[jonas.ff][jonas.ss] = 0;
+    q.push (jonas);
+    bfs ();
+    int mi = INT_MAX;
+    for (int i = 0; i < e; i++)
+        if (d[ex[i].ff][ex[i].ss] < fex[i])
+            mi = min (mi, d[ex[i].ff][ex[i].ss]+1);
+    if (mi != INT_MAX) printf ("%d\n", mi);
     else printf ("IMPOSSIBLE\n");
 }
 
