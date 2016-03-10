@@ -14,13 +14,23 @@ bool cmp (pii a, pii b) {
     return a.jj < b.jj;
 }
 
-pii dp (int i) {
+pii germito (pii a, pii b) {
+    if (a.jj != b.jj) return (a.jj > b.jj) ? a : b;
+    return (a.pp > b.pp) ? a : b;
+}
+
+pii dp (int i, int q) {
     if (i == n) return pii (0, 0);
     if (mdp[i].pp != -1) return mdp[i];
-    pii a1, a2, ans;
-    a1 = a2 = dp (i+1);
-    a1.jj += g[i].jj, a2.pp += g[i].pp;
-    ans = (a1.jj > a2.jj) ? a1 : a2;
+    pii a1, a2 = pii (-1, -1), ans;
+    a1 = dp (i+1, q+1);
+    a1.pp += g[i].pp;
+    if (q > 0) {
+        a2 = dp (i+1, q-1);
+        a2.jj += g[i].jj;
+    }
+    ans = germito (a1, a2);
+    printf ("%d %d\n", ans.pp, ans.jj);
     return mdp[i] = ans;
 }
 
@@ -34,13 +44,9 @@ int main () {
         for (int i = 0; i < n; i++)
             scanf (" %d %d", &g[i].pp, &g[i].jj);
         sort (g, g + n, cmp);
-        if (name[0] == 'P') {
-            pii ans = dp (1);
-            ans.pp += g[0].pp;
-            printf ("%d %d\n", ans.pp, ans.jj);
-            continue;
-        }
-        pii ans = dp (0);
+        pii ans;
+        if (name[0] == 'P') ans = dp (0, 0);
+        else pii ans = dp (0, 1);
         printf ("%d %d\n", ans.pp, ans.jj);
     }
 }
