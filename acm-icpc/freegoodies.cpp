@@ -3,10 +3,10 @@
 #define jj second
 using namespace std;
 typedef pair<int, int> pii;
-const int MAX = 1005;
+const int MAX = 3005;
 
 pii g[MAX];
-pii mdp[MAX];
+pii mdp[MAX][MAX];
 int tc, n;
 
 bool cmp (pii a, pii b) {
@@ -21,7 +21,7 @@ pii germito (pii a, pii b) {
 
 pii dp (int i, int q) {
     if (i == n) return pii (0, 0);
-    if (mdp[i].pp != -1) return mdp[i];
+    if (mdp[i][q].pp != -1) return mdp[i][q];
     pii a1, a2 = pii (-1, -1), ans;
     a1 = dp (i+1, q+1);
     a1.pp += g[i].pp;
@@ -30,8 +30,7 @@ pii dp (int i, int q) {
         a2.jj += g[i].jj;
     }
     ans = germito (a1, a2);
-    printf ("%d %d\n", ans.pp, ans.jj);
-    return mdp[i] = ans;
+    return mdp[i][q] = ans;
 }
 
 int main () {
@@ -46,7 +45,7 @@ int main () {
         sort (g, g + n, cmp);
         pii ans;
         if (name[0] == 'P') ans = dp (0, 0);
-        else pii ans = dp (0, 1);
+        else ans = dp (0, 1);
         printf ("%d %d\n", ans.pp, ans.jj);
     }
 }
