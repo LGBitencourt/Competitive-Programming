@@ -16,7 +16,6 @@ bool can (int x, int y) {
 }
 
 int new_state (int v, int is, int js) {
-    printf ("%d\n", v);
     for (int i = 0; i < 9; i++) {
         int x, y, flip;
         x = js + dx[i], y = is + dy[i];
@@ -26,7 +25,6 @@ int new_state (int v, int is, int js) {
             v ^= flip;
         }
     }
-    printf ("%d\n", v);
     return v;
 }
 
