@@ -19,22 +19,30 @@ int degree[30];
 vector<int> adj[30];
 
 int main() {
-    int n;
-    char s[105][30];
+    int n, k, l, j;
+    char s[105][105];
+    bool c = false;
+    vector<int> tp;
+    queue<int> q;
+
     scanf (" %d", &n);
     for (int i = 0; i < n; i++)
         scanf (" %s", s[i]);
-    int k, l;
     for (int i = 1; i < n; i++) {
         k = strlen (s[i]), l = strlen (s[i-1]);
-
+        for (j = 0; j < min (l, k); j++) {
+            if (s[i][j] != s[i-1][j]) {
+                int v = s[i][j] - 'a', u = s[i-1][j] - 'a';
+                adj[u].pb(v);
+                degree[v]++;
+                break;
+            }
+        }
+        if (j == min (l, k) && k < l) c = true;
     }
-    return 0;
-    queue<int> q;
     for (int i = 0; i < 26; i++)
         if (degree[i] == 0) q.push(i);
 
-    vector<int> tp;
     while (!q.empty()) {
         int v = q.front();
         tp.pb(v);
@@ -45,10 +53,13 @@ int main() {
         }
     }
 
-    bool c = false;
-    for (int i = 0; i < 26; i++)
-        if (degree[i] != 0) c = true;
+    for (int i = 0; i < 26; i++) {
+        if (degree[i] > 0) {
+            c = true;
+        }
+    }
     if (c) printf ("Impossible\n");
     else { for (int t : tp) printf ("%c", t + 'a'); putchar ('\n'); }
+
 }
 
