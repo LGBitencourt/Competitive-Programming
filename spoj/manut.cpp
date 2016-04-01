@@ -24,7 +24,6 @@ vector<int> adj[MAX];
 void dfs (int u, int p) {
     seen[u] = true;
     low[u] = d[u] = t++;
-    bool any = false;
     for (int i = 0; i < adj[u].size(); i++) {
         int v = adj[u][i];
         if (!seen[v]) {
