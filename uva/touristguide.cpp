@@ -16,25 +16,28 @@ const int MAX = 104;
 const int modn = 1000000007;
 
 vector<int> adj[MAX];
-bool seen[MAX], cut[MAX];
+bool seen[MAX];
 int low[MAX], d[MAX];
-int t, tc = 1, c, nf, root;
+int t, tc = 1, nf, root;
 map<string, int> m;
 map<int, string> mi;
+set<string> nm;
 
 void dfs (int u, int p) {
     seen[u] = true;
     low[u] = d[u] = t++;
+    int nf = 0;
+    bool any = false;
     for (int v : adj[u]) {
         if (!seen[v]) {
-            if (u == 0) nf++;
+            nf++;
             dfs (v, u);
-            if (low[u] >= d[u]) {
-                cut[u] = true;
-            }
+            if (low[v] >= d[u]) any = true;
             low[u] = min (low[u], low[v]);
         } else if (v != p) low[u] = min (low[u], d[v]);
     }
+    if (u == root && nf > 1) nm.insert (mi[u]);
+    else if (u != root && any) nm.insert (mi[u]);
 }
 
 int main() {
@@ -44,9 +47,10 @@ int main() {
         if (tc > 1) putchar ('\n');
         for (int i = 0; i <= n; i++) {
             adj[i].clear();
-            seen[i] = cut[i] = false;
+            seen[i] = false;
         }
-        t = c = 0;
+        t = 0;
+        nm.clear(), m.clear(), mi.clear();
         for (int i = 0; i < n; i++) {
             scanf (" %s", name);
             m[name] = i;
@@ -55,22 +59,22 @@ int main() {
         scanf (" %d", &e);
         for (int i = 0; i < e; i++) {
             scanf (" %s", name);
-            x = m.find(name)->second;
+            x = m[name];
             scanf (" %s", name);
-            y = m.find(name)->second;
+            y = m[name];
             adj[x].pb(y);
             adj[y].pb(x);
         }
-        dfs (0, -1);
-        cut[0] = (nf > 1);
-        for (int i = 0; i < n; i++) c += cut[i];
-        printf ("City map #%d: %d camera(s) found\n", tc++, c);
         for (int i = 0; i < n; i++) {
-            if (cut[i]) {
-                printf ("%s%c", (mi.find(i)->second).c_str(), (c == 1) ? '\n' : ' ');
-                c--;
+            if (!seen[i]) {
+                root = i;
+                dfs (i, -1);
             }
         }
+        printf ("City map #%d: %d camera(s) found\n", tc++, nm.size());
+        int s = nm.size();
+        for (set<string>::iterator it = nm.begin(); it != nm.end(); ++it)
+            printf ("%s\n", (*it).c_str());
     }
 }
 
