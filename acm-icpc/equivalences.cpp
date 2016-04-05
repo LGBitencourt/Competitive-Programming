@@ -13,48 +13,65 @@ const double eps = 1e-9;
 const int inf = INT_MAX;
 ////////////////0123456789
 const int MAX = 20004;
+const int MAXM = 50004;
 const int modn = 1000000007;
 
-int in[MAX], out[MAX], comp[MAX];
-int c_in[MAX], c_out[MAX];
-int c;
-bool seen[MAX];
+bool seen[MAX], used[MAX];
+int low[MAX], d[MAX], st[MAX], comp[MAX];
+int in[MAX], out[MAX];
 vector<int> adj[MAX];
+int n, m, sn, t, ain, aout, c;
+pii e[MAXM];
 
 void dfs (int u) {
     seen[u] = true;
-    comp[u] = c;
-    for (int i = 0; i < adj[u].size(); i++)
-        if (!seen[adj[u][i]])
-            dfs (adj[u][i]);
+    low[u] = d[u] = t++;
+    st[sn++] = u;
+    for (int v : adj[u]) {
+        if (!seen[v]) {
+            dfs (v);
+            low[u] = min (low[u], low[v]);
+        } else low[u] = min (low[u], d[v]);
+    }
+    if (low[u] >= d[u]) {
+        int a;
+        do {
+            a = st[--sn];
+            comp[a] = u;
+            d[a] = inf;
+        } while (a != u);
+        c++;
+    }
 }
 
 int main () {
-    int tc, n, m, x, y, ans;
+    int tc, x, y, ans;
     scanf (" %d", &tc);
     while (tc--) {
-        ans = c = 0;
         scanf (" %d %d", &n, &m);
-        for (int i = 0; i <= n; i++) {
-            c_in[i] = c_out[i] = in[i] = out[i] = 0;
-            comp[i] = -1;
-            seen[i] = false;
-            adj[i].clear();
-        }
+        for (int i = 0; i <= n; i++)
+            adj[i].clear(), seen[i] = false, used[i] = false,
+                comp[i] = i, in[i] = 0, out[i] = 0;
+        ain = aout = c = 0;
         for (int i = 0; i < m; i++) {
             scanf (" %d %d", &x, &y);
+            x--, y--;
+            e[i].ff = x, e[i].ss = y;
             adj[x].pb(y);
-            adj[y].pb(x);
-            out[x]++, in[y]++;
         }
-        for (int i = 1; i <= n; i++)
-            if (!seen[i]) dfs (i), c++;
-        for (int i = 1; i <= n; i++) {
-            if (in[i] == 0) c_in[comp[i]]++;
-            if (out[i] == 0) c_out[comp[i]]++;
+        for (int i = 0; i < n; i++)
+            if (!seen[i]) dfs (i);
+        for (int i = 0; i < m; i++) {
+            if (comp[e[i].ss] == comp[e[i].ff]) continue;
+            in[comp[e[i].ss]]++, out[comp[e[i].ff]]++;
         }
-        for (int i = 0; i < c; i++)
-            ans += max (c_in[i], c_out[i]);
-        printf ("%d\n", ans);
+        for (int i = 0; i < n; i++) {
+            if (used[comp[i]]) continue;
+            if (in[comp[i]] == 0) ain++;
+            if (out[comp[i]] == 0) aout++;
+            used[comp[i]] = true;
+        }
+        if (c == 1) printf ("0\n");
+        else printf ("%d\n", max (ain, aout));
     }
 }
