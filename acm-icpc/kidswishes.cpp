@@ -12,13 +12,14 @@ typedef pair<ll,ll> pll;
 const double eps = 1e-9;
 const int inf = INT_MAX;
 ////////////////0123456789
-const int MAX = 300005;
+const int MAX = 200005;
 const int modn = 1000000007;
 
 int k, w;
 int a, b, n, cmp;
 int uf[MAX], sz[MAX];
 map<int, int> m;
+set<pii> e;
 set<int> adj[MAX];
 
 int find (int v) {
@@ -35,9 +36,21 @@ bool join (int a, int b) {
     return true;
 }
 
+int compress (int v) {
+    auto f = m.find(v);
+    if (f != m.end()) v = f->second;
+    else {
+        m[v] = n;
+        v = n++;
+        adj[v].clear();
+    }
+    return v;
+}
+
 int main() {
     while (scanf (" %d %d", &k, &w), k != 0) {
         m.clear();
+        e.clear();
         for (int i = 0; i < MAX; i++)
             uf[i] = -1, sz[i] = 1;
 
@@ -46,20 +59,12 @@ int main() {
 
         for (int i = 0; i < w; i++) {
             scanf (" %d %d", &a, &b);
-            auto f = m.find(a);
-            if (f != m.end()) a = f->second;
-            else {
-                m[a] = n;
-                a = n++;
-                adj[a].clear();
-            }
-            f = m.find(b);
-            if (f != m.end()) b = f->second;
-            else {
-                m[b] = n;
-                b = n++;
-                adj[b].clear();
-            }
+            a = compress(a), b = compress(b);
+            e.insert(mp(min(a, b), max(a, b)));
+        }
+
+        for (auto i : e) {
+            a = i.ff, b = i.ss;
             adj[a].insert(b), adj[b].insert(a);
             if (!join (a, b)) {
                 a = find (a);
