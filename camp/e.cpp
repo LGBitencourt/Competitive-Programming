@@ -19,60 +19,68 @@ typedef pair<ll,ll> pll;
 const double eps = 1e-9;
 const int inf = INT_MAX;
 /////////////////0123456789
-const int MAXN = 104;
+const int MAXN = 500004;
 const int modn = 1000000007;
 
-struct s {
-    int i, j, d;
-    s() {};
-    s(int i0, int j0, int d0) {
-        i = i0, j = j0, d = d0;
-    }
-};
+int n, m, d, l, max_n;
+int v[MAXN], bit[MAXN];
 
-int n, m;
-int x[4] = {0, 1, 0, -1};
-int y[4] = {-1, 0, 1, 0};
-
-int d[MAXN][MAXN][5];
-char grid[MAXN][MAXN];
-
-pii ex;
-
-bool can(s p) {
-    if (p.i < 0 || p.j < 0 || p.i >= n || p.j >= m) return false;
-    if (grid[p.i][p.j] == '*') return false;
-    return true;
+void update (int idx, int v) {
+    for (int i = idx; i < MAXN; i += i&-i)
+        bit[i] += v;
 }
 
-int mod(int a, int b) { return (a % b) + b % b; }
+int query(int idx) {
+    int sum = 0;
+    for (int i = idx; i > 0; i -= i&-i)
+        sum += (bit[i] != 0) ? 1 : 0;
+    return sum;
+}
 
-void bfs() {
-    while (!q.empty()) {
-        s cur = q.front();
-        q.pop();
-        s nx = s(cur.i + x[cur.d], cur.j + y[cur.d], cur.d);
-        if (can(nw)) {
-            if (d[nx.i][nx.j][nx.d] == INT_MAX)
-                d[nx.i][nx.j][nx.d] = d[cur.i][cur.j][cur.d] + 1,
-                    q.push(nx);
-        }
-        if (d[nx.i][nx.j][mod(nx.d + 1, 4)] == INT_MAX)
-            d[nx.i][nx.j][mod(nx.d + 1, 4)] = d[nx.i][nx.j][nx.d] + 1,
-                q.push(s(nx.i, nx.j, mod(nx.d + 1, 4)));
-        if (d[nx.i][nx.j][mod(nx.d - 1, 4)] == INT_MAX)
-            d[nx.i][nx.j][mod(nx.d - 1, 4)] = d[nx.i][nx.j][nx.d] + 1,
-                q.push(s(nx.i, nx.j, mod(nx.d - 1, 4)));
+int find_l(int x) {
+    int l, r;
+    l = 1, r = n;
+    while (l != r) {
+        int mid = l + (r-l)/2;
+        if (v[mid] >= x) r = mid;
+        else l = mid + 1;
     }
+    return l;
+}
+
+int find_r(int x) {
+    int l, r;
+    l = 1, r = n;
+    while (l != r) {
+        int mid = l + (r-l)/2;
+        if (v[mid] > x) r = mid;
+        else l = mid + 1;
+    }
+    return l;
 }
 
 int main() {
-    while (scanf (" %d %d", &n, &m), n != 0 && m != 0) {
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < m; j++) {
-                scanf (" %c", &grid[i][j]);
-                if (grid[i][j] == 'X') ex = pii(i, j);
-            }
+    scanf (" %d %d %d %d", &n, &m, &d, &l);
+    v[1] = 0;
+    for (int i = 2; i <= n; i++) {
+        scanf (" %d", &v[i]);
+        max_n = max(max_n, v[i]);
+    }
+    for (int i = 0; i < m; i++) {
+        int cd;
+        scanf (" %d", &cd);
+        update(find_l(max(0, cd - l)), 1);
+        update(find_r(min(max_n, cd + l)), -1);
+    }
+    printf("%d\n", query(n));
+    for (int i = 0; i < d; i++) {
+        int p, r;
+        scanf (" %d %d", &p, &r);
+        update(find_l(max(0, p - l)), -1);
+        update(find_r(min(max_n, p + l)), 1);
+        update(find_l(max(0, r - l)), 1);
+        update(find_r(min(max_n, r + l)), -1);
+        printf("%d\n", query(n));
     }
 }
 
