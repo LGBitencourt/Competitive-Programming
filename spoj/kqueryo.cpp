@@ -26,8 +26,8 @@ const int modn = 1000000007;
 struct node {
     vector<int> v;
     node () {};
-    node (vector<int> a) { v = a; }
-    node (vector<int> a, vector<int> b) {
+    node (vector<int> &a) { v = a; }
+    node (vector<int> &a, vector<int> &b) {
         int i = 0, j = 0;
         while (i < a.size() && j < b.size()) {
             if (a[i] <= b[j]) v.pb(a[i++]);
@@ -39,17 +39,17 @@ struct node {
 };
 
 node seg[MAXN];
+int in[MAXN];
 
-void update (int l, int r, int i, int n, int x) {
-    if (i < l || i > r) return;
+void build (int l, int r, int n) {
     if (l == r) {
         vector<int> v;
-        v.pb(x);
+        v.pb(in[l]);
         seg[n] = node(v);
         return;
     }
-    update (l, (l+r)/2, i, 2*n, x);
-    update (((l+r)/2)+1, r, i, 2*n+1, x);
+    build (l, (l+r)/2, 2*n);
+    build (((l+r)/2)+1, r, 2*n+1);
     seg[n] = node (seg[2*n].v, seg[2*n + 1].v);
 }
 
@@ -65,10 +65,9 @@ int main () {
     int n, q, last_ans = 0;
     scanf (" %d", &n);
     for (int i = 1; i <= n; i++) {
-        int x;
-        scanf (" %d", &x);
-        update (1, n, i, 1, x);
+        scanf (" %d", &in[i]);
     }
+    build (1, n, 1);
     scanf (" %d", &q);
     while (q--) {
         int a, b, c, i, j, k;
