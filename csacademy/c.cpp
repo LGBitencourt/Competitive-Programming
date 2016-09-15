@@ -47,22 +47,20 @@ int main() {
     int n;
     int ans = 0;
     scanf(" %d", &n);
-    for (int i = 0; i <= n; i++)
-        seg[i] = -1;
-    for (int i = 1; i <= n; i++) {
+    for (int i = 0; i < n; i++) {
         int x, y;
         scanf(" %d %d", &x, &y);
         r[i] = pii(x, y);
     }
     sort(r, r + n);
-    for (int i = 1; i <= n; i++) {
-        update(1, n, r[i].ss, i, 1);
+    for (int i = 0; i < n; i++) {
+        update(0, n - 1, r[i].ss, i, 1);
         v[i] = r[i].ff;
     }
-    for (int i = 1; i <= n; i++) {
-        int d = upper_bound(v, v + n + 1, v[i]) - v;
-        if (d > n) ans++;
-        else if (r[i].ss >= query(1, n, d, n, 1)) ans++;
+    for (int i = 0; i < n; i++) {
+        int d = upper_bound(v, v + n, v[i]) - v;
+        if (d >= n) ans++;
+        else if (r[i].ss >= query(0, n - 1, d, n, 1)) ans++;
     }
     printf("%d\n", ans);
 }
