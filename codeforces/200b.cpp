@@ -14,17 +14,14 @@ const int inf = 0x3f3f3f3f;
 /////////////////0123456789
 const int MAXN = 10004;
 
-int n;
-int ans[MAXN];
-
 int main() {
+    int n, sum = 0;
     scanf(" %d", &n);
-    for (int i = 0; i <= n*n/2; i++)
-        ans[i + 1] = n*n - i;
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n/2; j++)
-            printf("%d %d ", i*(n/2) + j + 1, ans[i*(n/2) + j + 1]);
-        puts("");
+        int x;
+        scanf(" %d", &x);
+        sum += x;
     }
+    printf("%f\n", ((double) sum) / n);
 }
 
