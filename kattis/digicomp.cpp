@@ -1,18 +1,10 @@
 #include <bits/stdc++.h>
-#define pb push_back
-#define ff first
-#define ss second
 
 using namespace std;
 
 typedef long long ll;
-typedef pair<int,int> pii;
-typedef pair<ll,ll> pll;
 
-const double eps = 1e-9;
-const int inf = 0x3f3f3f3f;
-/////////////////0123456789
-const int MAXN = 500004;
+const int MAXN = 1000004;
 
 int e[MAXN], s[MAXN], in[MAXN];
 int adj[MAXN][2];
@@ -31,17 +23,27 @@ int main() {
         in[l]++, in[r]++;
     }
 
-    queue<int> q;
-    q.push(1);
+    set<int> q;
+    for (int i = 1; i <= m; i++)
+        if (!in[i]) q.insert(i);
     cnt[1] = n;
-    while (!q.empty()) {
-        int v = q.front();
-        q.pop();
-
+    while (q.size()) {
+        int v = *(q.begin());
+        q.erase(q.begin());
+        if (v == 0) continue;
+        int l, r;
+        l = adj[v][0], r = adj[v][1];
+        cnt[l] += (cnt[v] / 2LL);
+        cnt[r] += (cnt[v] / 2LL);
+        if (cnt[v] & 1LL) cnt[adj[v][s[v]]]++;
+        in[l]--, in[r]--;
+        if (in[l] == 0) q.insert(l);
+        if (in[r] == 0) q.insert(r);
     }
 
     for (int i = 0; i < m; i++)     
-        e[i] = s[i + 1] + (cnt[i + 1] % 2LL);
+        e[i] = s[i + 1] + (cnt[i + 1] & 1LL);
+
     for (int i = 0; i < m; i++) {
         if (e[i] & 1) printf("R");
         else printf("L");
